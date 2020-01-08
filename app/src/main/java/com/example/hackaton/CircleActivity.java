@@ -2,14 +2,14 @@ package com.example.hackaton;
 
 import android.app.Activity;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.Display;
+import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,19 +21,31 @@ public class CircleActivity extends Activity {
     private int count;
     float speed = 0.002f;
     List<ImageView> listObj = new ArrayList<ImageView>();
+    List<Boolean> listState = new ArrayList<Boolean>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.circle);
         display = getWindowManager().getDefaultDisplay();
-
-        final EditText result = (EditText)findViewById(R.id.answer);
 
         new CountDownTimer(60000, 30) {
 
             public void onTick(long millisUntilFinished) {
-                for (ImageView view: listObj) {
+                for (int i = 0; i < listObj.size(); i++) {
+                    ImageView view = listObj.get(i);
+                    int index = listObj.indexOf(view);
+
+                    if (view.getScaleX() > 0.4) {
+                        if (listState.get(index)) {
+                            //EXIT
+                        }
+                        view.setScaleX(0);
+                        view.setScaleY(0);
+                        listState.remove(index);
+                        listObj.remove(index);
+                    }
+
                     view.setScaleX(view.getScaleX() + speed);
                     view.setScaleY(view.getScaleY() + speed);
                 }
@@ -60,16 +72,18 @@ public class CircleActivity extends Activity {
 
     private ImageView createCircle() {
         final ImageView clone = new ImageView(getApplicationContext());
-        clone.setId(count);
         clone.setScaleX(0);
         clone.setScaleY(0);
         clone.setImageResource(R.drawable.circle);
         clone.setClickable(true);
 
-        if (rnd.nextDouble() >= 0.75)
+        if (rnd.nextDouble() >= 0.75) {
             clone.setColorFilter(Color.RED);
-        else
+            listState.add(true);
+        } else {
             clone.setColorFilter(Color.GREEN);
+            listState.add(false);
+        }
 
         float maxX = display.getWidth() - 200;
         float minX = 100;
@@ -82,15 +96,25 @@ public class CircleActivity extends Activity {
         clone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (clone.getColorFilter() == new ColorFilter()){
+                int index = listObj.indexOf(clone);
 
+                if (index == -1) return;
+
+                if (listState.get(index)){
+                    //EXIT
+                } else {
+                    clone.setScaleX(0);
+                    clone.setScaleY(0);
+                    listState.remove(index);
+                    listObj.remove(index);
+                    count++;
+                    ((TextView)findViewById(R.id.counter)).setText(String.valueOf(count));
                 }
 
             }
         });
 
         listObj.add(clone);
-        count++;
         addContentView(clone, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         return clone;
     }

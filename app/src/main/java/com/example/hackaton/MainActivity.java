@@ -45,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
 
                 int index = results.indexOf(result.getText().toString());
                 if (index != -1) {
-                    //((ViewGroup)findViewById(R.id.mainParent)).removeView(listTV.get(index));
                     listTV.get(index).setText("");
                     listTV.remove(index);
                     results.remove(index);

@@ -7,4 +7,21 @@
     tools:context=".MainActivity"
     android:id="@+id/mainParent">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="40dp"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:id="@+id/counter"
+            android:textSize="28dp"
+            android:textColor="#000"/>
+
+    </LinearLayout>
+
 </RelativeLayout>
